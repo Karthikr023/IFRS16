@@ -64,7 +64,14 @@ def main():
 # Format the date column to UK style
             result['ExpireDate'] = result['ExpireDate'].dt.strftime('%d/%m/%Y')
             result = result.drop(['Mut.Break S.Date', 'FX_TP_SPOT'], axis=1)
-            result.to_excel(r'Z:\FRM FX and Liquidity\FX\KR- Python output test\IFRS 16\_'+opco+'_'+date+'.xlsx', index = False)
+            excel_data = to_excel(result)
+            b64 = base64.b64encode(excel_data).decode("utf-8")
+            st.download_button(
+                label="Download Excel file",
+                data=b64,
+                file_name=opco+'_'+date+'.xlsx',
+                mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+            )
 # Show DataFrame
             st.write("Data Preview:")
             st.write(result.head())
