@@ -7,6 +7,13 @@ import openpyxl
 import datetime
 from datetime import datetime, timedelta
 
+def to_excel(df):
+    output = io.BytesIO()
+    with pd.ExcelWriter(output, engine='openpyxl') as writer:
+        df.to_excel(writer, index=False, sheet_name='Sheet1')
+    return output.getvalue()
+
+
 def main():
     st.title('IFRS 16 Reporting')
     today = datetime.now()
