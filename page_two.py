@@ -4,11 +4,14 @@ import pandas as pd
 import os
 from datetime import datetime
 
-host = '18.132.169.253'
-username = 'karthik'
-private_key_path = r'Z:\FRM FX and Liquidity\FX\KR-Python code test\weekly summary\karthik.pem'
-remote_directory = '/interfaces/reporting/FX_Hedging/'
-local_directory = r'Z:\FRM FX and Liquidity\FX\KR- Python output test\SFTP output\\'
+# Access secrets
+private_key_str = st.secrets["general"]["PRIVATE_KEY_BASE64"]
+host = st.secrets["general"]["HOST"]
+username = st.secrets["general"]["USERNAME"]
+
+# Decode the private key
+private_key_bytes = base64.b64decode(private_key_str)
+private_key = paramiko.RSAKey(file_obj=io.StringIO(private_key_bytes.decode()))
 
 # Set up SSH client
 ssh_client = paramiko.SSHClient()
