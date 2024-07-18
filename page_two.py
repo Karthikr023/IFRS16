@@ -3,6 +3,8 @@ import paramiko
 import pandas as pd
 import os
 from datetime import datetime
+import base64
+import io
 
 # Access secrets
 private_key_str = st.secrets["general"]["PRIVATE_KEY_BASE64"]
@@ -11,7 +13,7 @@ username = st.secrets["general"]["USERNAME"]
 
 # Decode the private key
 private_key_bytes = base64.b64decode(private_key_str)
-private_key_path = paramiko.RSAKey(file_obj=io.StringIO(private_key_bytes.decode()))
+private_key = paramiko.RSAKey(file_obj=io.StringIO(private_key_bytes.decode()))
 
 # Set up SSH client
 ssh_client = paramiko.SSHClient()
@@ -19,12 +21,15 @@ ssh_client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
 
 try:
     # Connect using the private key
-    ssh_client.connect(host, username=username, key_filename=private_key_path)
+    ssh_client.connect(host, username=username, pkey=private_key)
 
     # Open an SFTP session
     sftp = ssh_client.open_sftp()
 
     # Get list of files in the remote directory
+    remote_directory = '/interfaces/reporting/FX_Hedging/'  # Make sure to define this variable
+    local_directory = r'Z:\FRM FX and Liquidity\FX\KR- Python output test\SFTP output\\'  # Define local directory
+
     files = sftp.listdir_attr(remote_directory)
 
     # Extract filenames and dates
