@@ -11,7 +11,7 @@ username = st.secrets["general"]["USERNAME"]
 
 # Decode the private key
 private_key_bytes = base64.b64decode(private_key_str)
-private_key = paramiko.RSAKey(file_obj=io.StringIO(private_key_bytes.decode()))
+private_key_path = paramiko.RSAKey(file_obj=io.StringIO(private_key_bytes.decode()))
 
 # Set up SSH client
 ssh_client = paramiko.SSHClient()
